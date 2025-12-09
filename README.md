@@ -1,42 +1,43 @@
-### Как запустить проект:
+# What to Watch
 
-Клонировать репозиторий и перейти в него в командной строке:
+Flask web app for sharing movie opinions with Dropbox image upload support.
 
-```
-git clone 
-```
+## Getting Started
 
-```
+Clone the repository:
+
+```bash
+git clone https://github.com/hawkxdev/what_to_watch.git
 cd what_to_watch
 ```
 
-Cоздать и активировать виртуальное окружение:
+Install dependencies with uv:
 
-```
-python3 -m venv venv
-```
-
-```
-source venv/bin/activate
-```
-или для пользователей Windows
-
-```
-source env/Scripts/activate
+```bash
+uv sync
 ```
 
-Установить зависимости из файла requirements.txt:
+Create `.env` file from example:
 
-```
-python3 -m pip install --upgrade pip
-```
-
-```
-pip install -r requirements.txt
+```bash
+cp .env.example .env
 ```
 
-Запустить проект:
+Edit `.env` with your values.
 
+To get `DROPBOX_TOKEN`:
+1. Go to [Dropbox App Console](https://www.dropbox.com/developers/apps)
+2. Create app → Scoped access → Full Dropbox
+3. Generate access token in Settings
+
+Apply migrations:
+
+```bash
+uv run flask db upgrade
 ```
-flask run
+
+Run the project:
+
+```bash
+uv run flask run
 ```
