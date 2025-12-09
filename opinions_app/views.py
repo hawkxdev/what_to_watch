@@ -2,9 +2,19 @@ from random import randrange
 
 from flask import abort, flash, redirect, render_template, url_for
 
+from opinions_app.dropbox import upload_files_to_dropbox
+
 from . import app, db
 from .forms import OpinionForm
 from .models import Opinion
+
+
+def random_opinion():
+    quantity = Opinion.query.count()
+    if quantity:
+        offset_value = randrange(quantity)
+        opinion = Opinion.query.offset(offset_value).first()
+        return opinion
 
 
 @app.route('/')
@@ -25,10 +35,12 @@ def add_opinion_view():
         if Opinion.query.filter_by(text=text).first() is not None:
             flash('Такое мнение уже было оставлено ранее!')
             return render_template('add_opinion.html', form=form)
+        urls = upload_files_to_dropbox(form.images.data)
         opinion = Opinion(
             title=form.title.data,
             text=text,
-            source=form.source.data
+            source=form.source.data,
+            images = urls
         )
         db.session.add(opinion)
         db.session.commit()
