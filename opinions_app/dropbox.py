@@ -1,3 +1,4 @@
+"""Async Dropbox file upload and sharing functionality."""
 import asyncio
 import json
 import os
@@ -11,6 +12,7 @@ SHARING_LINK = os.getenv('SHARING_LINK')
 
 
 async def async_upload_files_to_dropbox(images):
+    """Upload multiple images to Dropbox concurrently and return sharing URLs."""
     if images is not None:
         tasks = []
         async with aiohttp.ClientSession() as session:
@@ -25,6 +27,7 @@ async def async_upload_files_to_dropbox(images):
 
 
 async def upload_file_and_get_url(session, image):
+    """Upload a single image to Dropbox and return its sharing URL."""
     dropbox_args = json.dumps({
         'autorename': True,
         'mode': 'add',

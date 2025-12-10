@@ -1,3 +1,4 @@
+"""Web views for displaying and adding opinions."""
 from random import randrange
 
 from flask import abort, flash, redirect, render_template, url_for
@@ -9,6 +10,7 @@ from .dropbox import async_upload_files_to_dropbox
 
 
 def random_opinion():
+    """Return a random opinion from the database."""
     quantity = Opinion.query.count()
     if quantity:
         offset_value = randrange(quantity)
@@ -18,6 +20,7 @@ def random_opinion():
 
 @app.route('/')
 def index_view():
+    """Display a random opinion on the home page."""
     quantity = Opinion.query.count()
     if not quantity:
         abort(500)
@@ -28,6 +31,7 @@ def index_view():
 
 @app.route('/add', methods=['GET', 'POST'])
 async def add_opinion_view():
+    """Handle opinion submission with optional image upload to Dropbox."""
     form = OpinionForm()
     if form.validate_on_submit():
         text = form.text.data
@@ -49,5 +53,6 @@ async def add_opinion_view():
 
 @app.route('/opinions/<int:id>')
 def opinion_view(id):
+    """Display a specific opinion by ID."""
     opinion = Opinion.query.get_or_404(id)
     return render_template('opinion.html', opinion=opinion)

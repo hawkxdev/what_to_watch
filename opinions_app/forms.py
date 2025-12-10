@@ -1,3 +1,4 @@
+"""WTForms form definitions."""
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, MultipleFileField
 from wtforms import StringField, SubmitField, TextAreaField, URLField
@@ -5,6 +6,7 @@ from wtforms.validators import DataRequired, Length, Optional
 
 
 class OpinionForm(FlaskForm):
+    """Form for submitting movie opinions with optional images."""
     title = StringField(
         'Введите название фильма',
         validators=[DataRequired(message='Обязательное поле'),

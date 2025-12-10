@@ -1,5 +1,4 @@
-# what_to_watch/opinions_app/api_views.py
-
+"""REST API endpoints for opinions CRUD operations."""
 from flask import jsonify, request
 
 from . import app, db
@@ -10,15 +9,16 @@ from .views import random_opinion
 
 @app.route('/api/opinions/<int:id>/', methods=['GET'])
 def get_opinion(id):
+    """Get a single opinion by ID."""
     opinion = Opinion.query.get(id)
     if opinion is None:
-        # Тут код ответа нужно указать явным образом.
         raise InvalidAPIUsage('Мнение с указанным id не найдено', 404)
     return jsonify({'opinion': opinion.to_dict()}), 200
 
 
 @app.route('/api/opinions/<int:id>/', methods=['PATCH'])
 def update_opinion(id):
+    """Update an existing opinion."""
     data = request.get_json()
     if (
         'text' in data and
@@ -26,7 +26,6 @@ def update_opinion(id):
     ):
         raise InvalidAPIUsage('Такое мнение уже есть в базе данных')
     opinion = Opinion.query.get(id)
-    # Тут код ответа нужно указать явным образом.
     if opinion is None:
         raise InvalidAPIUsage('Мнение с указанным id не найдено', 404)
     opinion.title = data.get('title', opinion.title)
@@ -39,9 +38,9 @@ def update_opinion(id):
 
 @app.route('/api/opinions/<int:id>/', methods=['DELETE'])
 def delete_opinion(id):
+    """Delete an opinion by ID."""
     opinion = Opinion.query.get(id)
     if opinion is None:
-        # Тут код ответа нужно указать явным образом.
         raise InvalidAPIUsage('Мнение с указанным id не найдено', 404)
     db.session.delete(opinion)
     db.session.commit()
@@ -50,6 +49,7 @@ def delete_opinion(id):
 
 @app.route('/api/opinions/', methods=['GET'])
 def get_opinions():
+    """Get all opinions."""
     opinions = Opinion.query.all()
     opinions_list = [opinion.to_dict() for opinion in opinions]
     return jsonify({'opinions': opinions_list}), 200
@@ -57,6 +57,7 @@ def get_opinions():
 
 @app.route('/api/opinions/', methods=['POST'])
 def add_opinion():
+    """Create a new opinion."""
     data = request.get_json()
     if 'title' not in data or 'text' not in data:
         raise InvalidAPIUsage('В запросе отсутствуют обязательные поля')
@@ -71,8 +72,8 @@ def add_opinion():
 
 @app.route('/api/get-random-opinion/', methods=['GET'])
 def get_random_opinion():
+    """Get a random opinion from the database."""
     opinion = random_opinion()
     if opinion is not None:
         return jsonify({'opinion': opinion.to_dict()}), 200
-    # Тут код ответа нужно указать явным образом.
     raise InvalidAPIUsage('В базе данных нет мнений', 404)

@@ -1,9 +1,12 @@
+"""Database models for the application."""
 from datetime import datetime
 
 from . import db
 
 
 class Opinion(db.Model):
+    """Movie opinion with title, text, source link, and images."""
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128), nullable=False)
     text = db.Column(db.Text, unique=True, nullable=False)
@@ -13,6 +16,7 @@ class Opinion(db.Model):
     added_by = db.Column(db.String(64))
 
     def to_dict(self):
+        """Convert model instance to dictionary."""
         return dict(
             id=self.id,
             title=self.title,
@@ -23,6 +27,7 @@ class Opinion(db.Model):
         )
 
     def from_dict(self, data):
+        """Populate model fields from dictionary."""
         for field in ['title', 'text', 'source', 'added_by']:
             if field in data:
                 setattr(self, field, data[field])
