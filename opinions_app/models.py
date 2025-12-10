@@ -1,10 +1,11 @@
 """Database models for the application."""
 from datetime import datetime
+from typing import Any
 
 from . import db
 
 
-class Opinion(db.Model):
+class Opinion(db.Model):  # type: ignore[name-defined]
     """Movie opinion with title, text, source link, and images."""
 
     id = db.Column(db.Integer, primary_key=True)
@@ -15,7 +16,7 @@ class Opinion(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     added_by = db.Column(db.String(64))
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         """Convert model instance to dictionary."""
         return dict(
             id=self.id,
@@ -26,7 +27,7 @@ class Opinion(db.Model):
             added_by=self.added_by
         )
 
-    def from_dict(self, data):
+    def from_dict(self, data: dict[str, Any]) -> None:
         """Populate model fields from dictionary."""
         for field in ['title', 'text', 'source', 'added_by']:
             if field in data:

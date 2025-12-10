@@ -4,14 +4,17 @@ import json
 import os
 
 import aiohttp
+from werkzeug.datastructures import FileStorage
 
-DROPBOX_TOKEN = os.getenv('DROPBOX_TOKEN')
+DROPBOX_TOKEN = os.getenv('DROPBOX_TOKEN', '')
 AUTH_HEADER = f'Bearer {DROPBOX_TOKEN}'
-UPLOAD_LINK = os.getenv('UPLOAD_LINK')
-SHARING_LINK = os.getenv('SHARING_LINK')
+UPLOAD_LINK = os.getenv('UPLOAD_LINK', '')
+SHARING_LINK = os.getenv('SHARING_LINK', '')
 
 
-async def async_upload_files_to_dropbox(images):
+async def async_upload_files_to_dropbox(
+    images: list[FileStorage] | None
+) -> list[str] | None:
     """Upload multiple images to Dropbox concurrently and return sharing URLs."""
     if images is not None:
         tasks = []
@@ -23,10 +26,13 @@ async def async_upload_files_to_dropbox(images):
                     )
                 )
             urls = await asyncio.gather(*tasks)
-        return urls
+        return list(urls)
+    return None
 
 
-async def upload_file_and_get_url(session, image):
+async def upload_file_and_get_url(
+    session: aiohttp.ClientSession, image: FileStorage
+) -> str:
     """Upload a single image to Dropbox and return its sharing URL."""
     dropbox_args = json.dumps({
         'autorename': True,

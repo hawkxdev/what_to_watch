@@ -1,5 +1,5 @@
 """REST API endpoints for opinions CRUD operations."""
-from flask import jsonify, request
+from flask import Response, jsonify, request
 
 from . import app, db
 from .error_handlers import InvalidAPIUsage
@@ -8,7 +8,7 @@ from .views import random_opinion
 
 
 @app.route('/api/opinions/<int:id>/', methods=['GET'])
-def get_opinion(id):
+def get_opinion(id: int) -> tuple[Response, int]:
     """Get a single opinion by ID."""
     opinion = Opinion.query.get(id)
     if opinion is None:
@@ -17,7 +17,7 @@ def get_opinion(id):
 
 
 @app.route('/api/opinions/<int:id>/', methods=['PATCH'])
-def update_opinion(id):
+def update_opinion(id: int) -> tuple[Response, int]:
     """Update an existing opinion."""
     data = request.get_json()
     if (
@@ -37,7 +37,7 @@ def update_opinion(id):
 
 
 @app.route('/api/opinions/<int:id>/', methods=['DELETE'])
-def delete_opinion(id):
+def delete_opinion(id: int) -> tuple[str, int]:
     """Delete an opinion by ID."""
     opinion = Opinion.query.get(id)
     if opinion is None:
@@ -48,7 +48,7 @@ def delete_opinion(id):
 
 
 @app.route('/api/opinions/', methods=['GET'])
-def get_opinions():
+def get_opinions() -> tuple[Response, int]:
     """Get all opinions."""
     opinions = Opinion.query.all()
     opinions_list = [opinion.to_dict() for opinion in opinions]
@@ -56,7 +56,7 @@ def get_opinions():
 
 
 @app.route('/api/opinions/', methods=['POST'])
-def add_opinion():
+def add_opinion() -> tuple[Response, int]:
     """Create a new opinion."""
     data = request.get_json()
     if 'title' not in data or 'text' not in data:
@@ -71,7 +71,7 @@ def add_opinion():
 
 
 @app.route('/api/get-random-opinion/', methods=['GET'])
-def get_random_opinion():
+def get_random_opinion() -> tuple[Response, int]:
     """Get a random opinion from the database."""
     opinion = random_opinion()
     if opinion is not None:
