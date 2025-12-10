@@ -13,3 +13,10 @@ dependencies = [
     "requests==2.32.3",
     "aiohttp==3.10.3",
 ]
+
+[dependency-groups]
+dev = [
+    "bandit>=1.9.2",
+    "mypy>=1.19.0",
+    "ruff>=0.14.8",
+]
